@@ -748,12 +748,12 @@ func (m Model) Update(msg tea.Msg) (Model, tea.Cmd) {
 	var cmds []tea.Cmd
 
 	if m.Height != m.viewport.Height {
-		m.Height = min(maxHeight, m.Height)
-		m.viewport.Height = min(maxHeight, m.Height)
+		m.Height = clamp(m.Height, minHeight, maxHeight)
+		m.viewport.Height = clamp(m.Height, minHeight, maxHeight)
 	}
 	if m.Width != m.viewport.Width {
-		m.Width = min(maxWidth, m.Width)
-		m.viewport.Width = min(maxWidth, m.Width)
+		m.Width = clamp(m.Width, minWidth, maxWidth)
+		m.viewport.Width = clamp(m.Width, minWidth, maxWidth)
 	}
 	if m.value[m.row] == nil {
 		m.value[m.row] = make([]rune, 0)
@@ -1056,8 +1056,6 @@ func (m Model) mergeLineBelow(row int) {
 		return
 	}
 
-	m.col = len(m.value[row]) - 1
-
 	// To perform a merge, we will need to combine the two lines and then
 	m.value[row] = append(m.value[row], m.value[row+1]...)
 
@@ -1209,9 +1207,4 @@ func max(a, b int) int {
 		return a
 	}
 	return b
-}
-
-func concat(first []rune, second []rune) []rune {
-	n := len(first)
-	return append(first[:n:n], second...)
 }
